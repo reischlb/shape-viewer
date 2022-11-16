@@ -7,28 +7,30 @@ using System.Threading.Tasks;
 
 namespace ShapeLoader.FolderHandling
 {
-    internal class FolderExplorer
+    public class FolderExplorer
     {
         public DirectoryInfo Folder { get; init; }
-        private List<string> Files { get; }
+        private List<string> FilesToExplore { get; }
 
         public FolderExplorer(DirectoryInfo folder)
         {
             Folder = folder;
-            Files = Folder.GetFiles().Select(f => f.FullName).ToList();
+            FilesToExplore = Folder.GetFiles().Select(f => f.FullName).ToList();
         }
 
         public IReadOnlyList<ShapeUnitFiles> CollectShapeUnits()
         {
             List<ShapeUnitFiles> shapeUnits = new();
 
-            var files = Folder.GetFiles().ToList();
+            var files = FilesToExplore.Select(str => new FileInfo(str)).ToList();
 
             while (files.Count > 0)
             {
                 var shapeUnit = CollectShapeUnitFiles(files[0]);
                 RemoveFoundFilesFromFilesList(shapeUnit);
-                shapeUnits.Add(shapeUnit);
+                if (shapeUnit is not null)
+                    shapeUnits.Add(shapeUnit);
+                files = FilesToExplore.Select(str => new FileInfo(str)).ToList();
             }
 
             return shapeUnits;
@@ -44,31 +46,40 @@ namespace ShapeLoader.FolderHandling
             _ => ShapeFileExtension.NotSupported,
         };
 
-        private ShapeUnitFiles CollectShapeUnitFiles(FileInfo file)
+        private ShapeUnitFiles? CollectShapeUnitFiles(FileInfo file)
         {
-            string filenameWithoutExtension = Path.GetFileNameWithoutExtension(file.FullName);
+            if (GetExtension(file) is ShapeFileExtension.NotSupported)
+            {
+                FilesToExplore.Remove(file.FullName);
+                return null;
+            }
+            var CPGFullName = Path.ChangeExtension(file.FullName, "cpg");
+            var SHPFullName = Path.ChangeExtension(file.FullName, "shp");
+            var SHXFullName = Path.ChangeExtension(file.FullName, "shx");
+            var DBFFullName = Path.ChangeExtension(file.FullName, "dbf");
+            var PRJFullName = Path.ChangeExtension(file.FullName, "prj");
             return new ShapeUnitFiles()
             {
-                CPGFile = Files.Contains($"{filenameWithoutExtension}.cpg") ? $"{filenameWithoutExtension}.cpg" : null,
-                SHPFile = Files.Contains($"{filenameWithoutExtension}.shp") ? $"{filenameWithoutExtension}.shp" : null,
-                SHXFile = Files.Contains($"{filenameWithoutExtension}.shx") ? $"{filenameWithoutExtension}.shx" : null,
-                DBFFile = Files.Contains($"{filenameWithoutExtension}.dbf") ? $"{filenameWithoutExtension}.dbf" : null,
-                PRJFile = Files.Contains($"{filenameWithoutExtension}.prj") ? $"{filenameWithoutExtension}.prj" : null,
+                CPGFile = FilesToExplore.Contains(CPGFullName) ? CPGFullName : null,
+                SHPFile = FilesToExplore.Contains(SHPFullName) ? SHPFullName : null,
+                SHXFile = FilesToExplore.Contains(SHXFullName) ? SHXFullName : null,
+                DBFFile = FilesToExplore.Contains(DBFFullName) ? DBFFullName : null,
+                PRJFile = FilesToExplore.Contains(PRJFullName) ? PRJFullName : null,
             };
         }
 
-        private void RemoveFoundFilesFromFilesList(ShapeUnitFiles foundFiles)
+        private void RemoveFoundFilesFromFilesList(ShapeUnitFiles? foundFiles)
         {
-            if (foundFiles.CPGFile is not null)
-                Files.Remove(foundFiles.CPGFile);
-            if (foundFiles.SHXFile is not null)
-                Files.Remove(foundFiles.SHXFile);
-            if (foundFiles.SHPFile is not null)
-                Files.Remove(foundFiles.SHPFile);
-            if (foundFiles.PRJFile is not null)
-                Files.Remove(foundFiles.PRJFile);
-            if (foundFiles.DBFFile is not null)
-                Files.Remove(foundFiles.DBFFile);
+            if (foundFiles?.CPGFile is not null)
+                FilesToExplore.Remove(foundFiles.CPGFile);
+            if (foundFiles?.SHXFile is not null)
+                FilesToExplore.Remove(foundFiles.SHXFile);
+            if (foundFiles?.SHPFile is not null)
+                FilesToExplore.Remove(foundFiles.SHPFile);
+            if (foundFiles?.PRJFile is not null)
+                FilesToExplore.Remove(foundFiles.PRJFile);
+            if (foundFiles?.DBFFile is not null)
+                FilesToExplore.Remove(foundFiles.DBFFile);
         }
     }
 }
