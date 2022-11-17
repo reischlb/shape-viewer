@@ -1,21 +1,15 @@
-﻿using ShapeLoader.FolderHandling;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ShapeLoader.Loaders
+﻿namespace ShapeLoader.Loaders
 {
     public class FolderLoader
     {
         public static void LoadFilesInFolder(DirectoryInfo folder)
         {
-            var units = new FolderExplorer(folder).CollectShapeUnits();
+            var shapeFiles = folder.GetFiles().Where(file => file.Extension == ".shp");
 
-            foreach (var unit in units)
+
+            foreach (var file in shapeFiles)
             {
-                unit.LoadUnit();
+                SHPLoader.LoadSHP(file);
             }
         }
     }

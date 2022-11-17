@@ -25,4 +25,9 @@
     <ProjectReference Include="..\ShapeLoader\ShapeLoader.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="FolderExplorer_Tests\" />
+    <Folder Include="Loaders\" />
+  </ItemGroup>
+
 </Project>
