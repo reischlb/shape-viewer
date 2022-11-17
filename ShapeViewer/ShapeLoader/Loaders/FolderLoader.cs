@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ShapeLoader.FolderHandling;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,16 +9,13 @@ namespace ShapeLoader.Loaders
 {
     public class FolderLoader
     {
-        public static void LoadFilesInFolder (DirectoryInfo folder)
+        public static void LoadFilesInFolder(DirectoryInfo folder)
         {
-            foreach (var file in folder.GetFiles())
+            var units = new FolderExplorer(folder).CollectShapeUnits();
+
+            foreach (var unit in units)
             {
-                switch (file.Extension)
-                {
-                    case ".shx": SHXLoader.LoadSHX(file); break;
-                    case ".shp": SHPLoader.LoadSHP(file); break;
-                    case ".dbf": DBFLoader.LoadDBF(file); break;
-                }
+                unit.LoadUnit();
             }
         }
     }

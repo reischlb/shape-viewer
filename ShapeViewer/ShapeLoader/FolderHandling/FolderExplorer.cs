@@ -38,10 +38,10 @@ namespace ShapeLoader.FolderHandling
 
         private static ShapeFileExtension GetExtension(FileInfo file) => file.Extension switch
         {
-            ".cpg" => ShapeFileExtension.CPG,
+            //".cpg" => ShapeFileExtension.CPG,
             ".shx" => ShapeFileExtension.SHX,
             ".shp" => ShapeFileExtension.SHP,
-            ".prj" => ShapeFileExtension.PRJ,
+            //".prj" => ShapeFileExtension.PRJ,
             ".dbf" => ShapeFileExtension.DBF,
             _ => ShapeFileExtension.NotSupported,
         };
@@ -60,24 +60,24 @@ namespace ShapeLoader.FolderHandling
             var PRJFullName = Path.ChangeExtension(file.FullName, "prj");
             return new ShapeUnitFiles()
             {
-                CPGFile = FilesToExplore.Contains(CPGFullName) ? CPGFullName : null,
+                //CPGFile = FilesToExplore.Contains(CPGFullName) ? CPGFullName : null,
                 SHPFile = FilesToExplore.Contains(SHPFullName) ? SHPFullName : null,
                 SHXFile = FilesToExplore.Contains(SHXFullName) ? SHXFullName : null,
                 DBFFile = FilesToExplore.Contains(DBFFullName) ? DBFFullName : null,
-                PRJFile = FilesToExplore.Contains(PRJFullName) ? PRJFullName : null,
+                //PRJFile = FilesToExplore.Contains(PRJFullName) ? PRJFullName : null,
             };
         }
 
         private void RemoveFoundFilesFromFilesList(ShapeUnitFiles? foundFiles)
         {
-            if (foundFiles?.CPGFile is not null)
-                FilesToExplore.Remove(foundFiles.CPGFile);
+          //  if (foundFiles?.CPGFile is not null)
+          //      FilesToExplore.Remove(foundFiles.CPGFile);
             if (foundFiles?.SHXFile is not null)
                 FilesToExplore.Remove(foundFiles.SHXFile);
             if (foundFiles?.SHPFile is not null)
                 FilesToExplore.Remove(foundFiles.SHPFile);
-            if (foundFiles?.PRJFile is not null)
-                FilesToExplore.Remove(foundFiles.PRJFile);
+         //   if (foundFiles?.PRJFile is not null)
+         //       FilesToExplore.Remove(foundFiles.PRJFile);
             if (foundFiles?.DBFFile is not null)
                 FilesToExplore.Remove(foundFiles.DBFFile);
         }

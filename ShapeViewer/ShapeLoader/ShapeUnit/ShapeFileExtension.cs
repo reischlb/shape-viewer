@@ -8,6 +8,6 @@ namespace ShapeLoader.ShapeUnit
 {
     public enum ShapeFileExtension
     {
-        CPG, DBF, PRJ, SHP, SHX, NotSupported
+        /*CPG,*/ DBF, /*PRJ,*/ SHP, SHX, NotSupported
     }
 }
