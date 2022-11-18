@@ -1,12 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using ShapeData.Geometry;
 
 namespace ShapeData.Data
 {
-    internal class ShapeMultiPoint
+    public class ShapeMultiPoint : IShapeData
     {
+        public List<Point> Points { get; init; }
+
+        public Dictionary<string, object> Attributes { get; init; } = new();
+
+        public ShapeMultiPoint(List<Point> points)
+        {
+            Points = points;
+        }
     }
 }

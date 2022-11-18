@@ -26,8 +26,8 @@ namespace ShapeLoader.Loaders
 
         public static List<(Geometry Geometry, object[] Attributes)> GetZippedAttributes(this IFeatureSet featureSet)
         {
-            var geometries = GetGeometries(featureSet);
-            var attributes = GetAttributes(featureSet);
+            var geometries = featureSet.GetGeometries();
+            var attributes = featureSet.GetAttributes();
 
             return geometries.Zip(attributes).ToList();
         }

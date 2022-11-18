@@ -9,54 +9,83 @@ namespace ShapeLoader.Loaders
     public static class SHPLoader
     {
         public static List<IShapeData> LoadSHP(FileInfo shpFile) =>
-            GetShapePolygonsFromShapeFile(FeatureSet.Open(shpFile.FullName));
+            GetShapeDatasFromShapeFile(FeatureSet.Open(shpFile.FullName));
 
-        public static List<IShapeData> GetShapePolygonsFromShapeFile(IFeatureSet shapefile)
+        public static List<IShapeData> GetShapeDatasFromShapeFile(IFeatureSet shapeFile)
         {
-            var polygons = new List<IShapeData>();
 
-            if (shapefile.FeatureType is FeatureType.Polygon &&
-                shapefile is PolygonShapefile polygonFile)
-            {
-                return CollectPolygons(polygonFile);
-            }
-            return polygons;
-        }
+            var datas = new List<IShapeData>();
 
-        private static List<IShapeData> CollectPolygons(PolygonShapefile shapePoint)
-        {
-            var polygons = new List<IShapeData>();
+            var zippedDatas = shapeFile.GetZippedAttributes();
 
-            var zippedPolygons = shapePoint.GetZippedAttributes();
+            var header = shapeFile.GetAttributeHeaders();
 
-            var header = shapePoint.GetAttributeHeaders();
-
-            foreach (var item in zippedPolygons)
+            foreach (var item in zippedDatas)
             {
                 var attrs = ZipObjectAttributes(header, item.Attributes);
 
                 switch (item.Geometry.OgcGeometryType)
                 {
                     case OgcGeometryType.Polygon:
-                        polygons.Add(CreateShapePolygonFromSimplePolygon(item.Geometry, attrs));
+                        datas.Add(CreateShapePolygonFromSimplePolygon(item.Geometry, attrs));
                         break;
                     case OgcGeometryType.MultiPolygon:
-                        polygons.Add(CreateShapePolygonFromMultiPolygon(item.Geometry, attrs));
+                        datas.Add(CreateShapePolygonFromMultiPolygon(item.Geometry, attrs));
+                        break;
+                    case OgcGeometryType.Point:
+                        datas.Add(CreateShapePointFromPoint(item.Geometry, attrs));
+                        break;
+                    case OgcGeometryType.MultiPoint:
+                        datas.Add(CreateShapePointFromMultiPoint(item.Geometry, attrs));
                         break;
 
                     default:
                         break;
                 }
             }
-            return polygons;
+            return datas;
+
         }
+
+        private static List<IShapeData> CollectPoints(PointShapefile pointFile)
+        {
+            List<IShapeData> points = new();
+            var zippedPoints = pointFile.GetZippedAttributes();
+            var header = pointFile.GetAttributeHeaders();
+
+            foreach (var item in zippedPoints)
+            {
+                var attrs = ZipObjectAttributes(header, item.Attributes);
+            }
+
+            return points;
+        }
+
+        private static ShapePoint CreateShapePointFromPoint(Geometry polygonGeometry, Dictionary<string, object> attributes)
+        {
+            return new(new(polygonGeometry.Coordinate.X, polygonGeometry.Coordinate.Y)) { Attributes = attributes };
+        }
+
+        private static ShapeMultiPoint CreateShapePointFromMultiPoint(Geometry polygonGeometry, Dictionary<string, object> attributes)
+        {
+            List<SDG.Point> points = GetCoordinatesFromGeometry(polygonGeometry);
+
+            return new(points) { Attributes = attributes };
+        }
+
 
         private static ShapePolygon CreateShapePolygonFromSimplePolygon(Geometry polygonGeometry, Dictionary<string, object> attributes)
         {
-            List<SDG.Point> points = new();
-            points.AddRange(polygonGeometry.Coordinates.Select(coordinate => new SDG.Point(coordinate.X, coordinate.Y)));
+            List<SDG.Point> points = GetCoordinatesFromGeometry(polygonGeometry);
 
             return new ShapePolygon(new SDG.Polygon(points)) { Attributes = attributes };
+        }
+
+        private static List<SDG.Point> GetCoordinatesFromGeometry(Geometry polygonGeometry)
+        {
+            List<SDG.Point> points = new();
+            points.AddRange(polygonGeometry.Coordinates.Select(coordinate => new SDG.Point(coordinate.X, coordinate.Y)));
+            return points;
         }
 
         private static ShapeMultiPolygon CreateShapePolygonFromMultiPolygon(Geometry polygonGeometry, Dictionary<string, object> attributes)
