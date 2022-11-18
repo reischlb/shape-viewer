@@ -2,10 +2,11 @@
 {
     public class Polygon
     {
-        public IReadOnlyList<Line> Lines { get; init; }
-        public Polygon(IReadOnlyList<Line> lines)
+        public IReadOnlyList<Point> Points { get; init; }
+
+        public Polygon(IReadOnlyList<Point> points)
         {
-            Lines = lines;
+            Points = points;
         }
     }
 }

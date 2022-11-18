@@ -6,7 +6,7 @@ namespace ShapeData.Data
     {
         public Line Line { get; init; }
 
-        public Dictionary<string, string> Attributes { get; init; } = new();
+        public Dictionary<string, object> Attributes { get; init; } = new();
 
         public ShapeLine(Line line)
         {

@@ -1,4 +1,6 @@
-﻿namespace ShapeData.Geometry
+﻿using System.Runtime.CompilerServices;
+
+namespace ShapeData.Geometry
 {
     public class Point
     {
@@ -10,6 +12,28 @@
         {
             X = x;
             Y = y;
+        }
+
+       public static bool operator ==(Point a, Point b)
+       {
+           return a.X == b.X && a.Y == b.Y;
+       }
+       
+       public static bool operator !=(Point a, Point b)
+       {
+           return !(a == b);
+       }
+
+        public override bool Equals(object? obj)
+        {
+            return obj is Point point &&
+                   X == point.X &&
+                   Y == point.Y;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(X, Y);
         }
     }
 }

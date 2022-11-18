@@ -6,7 +6,7 @@ namespace ShapeData.Data
     {
         public Point Point { get; init; }
 
-        public Dictionary<string, string> Attributes { get; init; } = new();
+        public Dictionary<string, object> Attributes { get; init; } = new();
 
         public ShapePoint(Point point)
         {
