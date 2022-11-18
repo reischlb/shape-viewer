@@ -1,15 +1,15 @@
-﻿namespace ShapeData.Geometry
+﻿using System.Diagnostics;
+
+namespace ShapeData.Geometry
 {
     public class Line
     {
-        public Point Start { get; init; }
+        public IReadOnlyList<Point> Points { get; init; }
 
-        public Point End { get; init; }
-
-        public Line(Point start, Point end)
+        public Line(IReadOnlyList<Point> points)
         {
-            Start = start;
-            End = end;
+            Points = points;
+            Debug.Assert(Points[0] == Points[Points.Count - 1]);
         }
     }
 }

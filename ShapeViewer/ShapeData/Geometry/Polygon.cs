@@ -1,4 +1,6 @@
-﻿namespace ShapeData.Geometry
+﻿using System.Diagnostics;
+
+namespace ShapeData.Geometry
 {
     public class Polygon
     {
@@ -7,6 +9,7 @@
         public Polygon(IReadOnlyList<Point> points)
         {
             Points = points;
+            Debug.Assert(Points[0] == Points[Points.Count - 1]);
         }
     }
 }

@@ -2,6 +2,7 @@
 using NetTopologySuite.Geometries;
 using ShapeData.Data;
 using System.Data;
+using System.Diagnostics;
 using SDG = ShapeData.Geometry;
 
 namespace ShapeLoader.Loaders
@@ -38,6 +39,9 @@ namespace ShapeLoader.Loaders
                     case OgcGeometryType.MultiPoint:
                         datas.Add(CreateShapePointFromMultiPoint(item.Geometry, attrs));
                         break;
+                    case OgcGeometryType.LineString:
+                        datas.Add(CreateShapeLineFromLineString(item.Geometry, attrs));
+                        break;
 
                     default:
                         break;
@@ -47,20 +51,6 @@ namespace ShapeLoader.Loaders
 
         }
 
-        private static List<IShapeData> CollectPoints(PointShapefile pointFile)
-        {
-            List<IShapeData> points = new();
-            var zippedPoints = pointFile.GetZippedAttributes();
-            var header = pointFile.GetAttributeHeaders();
-
-            foreach (var item in zippedPoints)
-            {
-                var attrs = ZipObjectAttributes(header, item.Attributes);
-            }
-
-            return points;
-        }
-
         private static ShapePoint CreateShapePointFromPoint(Geometry polygonGeometry, Dictionary<string, object> attributes)
         {
             return new(new(polygonGeometry.Coordinate.X, polygonGeometry.Coordinate.Y)) { Attributes = attributes };
@@ -68,9 +58,12 @@ namespace ShapeLoader.Loaders
 
         private static ShapeMultiPoint CreateShapePointFromMultiPoint(Geometry polygonGeometry, Dictionary<string, object> attributes)
         {
-            List<SDG.Point> points = GetCoordinatesFromGeometry(polygonGeometry);
+            return new(GetCoordinatesFromGeometry(polygonGeometry)) { Attributes = attributes };
+        }
 
-            return new(points) { Attributes = attributes };
+        private static ShapeLine CreateShapeLineFromLineString(Geometry polygonGeometry, Dictionary<string, object> attributes)
+        {
+            return new(new(GetCoordinatesFromGeometry(polygonGeometry))) { Attributes = attributes };
         }
 
 
