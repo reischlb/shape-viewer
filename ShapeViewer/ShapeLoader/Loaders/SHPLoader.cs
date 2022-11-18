@@ -26,14 +26,10 @@ namespace ShapeLoader.Loaders
         private static List<IShapeData> CollectPolygons(PolygonShapefile shapePoint)
         {
             var polygons = new List<IShapeData>();
-            var geometries = shapePoint.Features.Select(feature => feature.Geometry);
-            var attributes = from DataRow row in shapePoint.DataTable.Rows
-                             select row.ItemArray;
 
-            var zippedPolygons = geometries.Zip(attributes, (geom, attrs) => new { Geometry = geom, Attributes = attrs });
+            var zippedPolygons = shapePoint.GetZippedAttributes();
 
-            var header = from DataColumn column in shapePoint.DataTable.Columns
-                         select column.ColumnName;
+            var header = shapePoint.GetAttributeHeaders();
 
             foreach (var item in zippedPolygons)
             {
