@@ -23,4 +23,8 @@
     <Folder Include="ShapeUnit\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\ShapeData\ShapeData.csproj" />
+  </ItemGroup>
+
 </Project>
