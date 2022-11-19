@@ -43,12 +43,6 @@ namespace ShapeLoader.Loaders
                     data: featureSet.DataTable.Rows[i]);
                 result.Add(data);
             }
-
-            var bol = result.Where(fd => (string)fd.Data[0] == "BOL").Select(x => x).First();
-
-            bol.Data[1] = "hello";
-
-            featureSet.SaveAs(@"C:\Users\reisc\OneDrive\Asztali gép\myshape3.shp", true);
             return result;
         }
     }
