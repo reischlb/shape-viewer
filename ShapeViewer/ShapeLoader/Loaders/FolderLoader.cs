@@ -5,9 +5,9 @@ namespace ShapeLoader.Loaders
 {
     public class FolderLoader
     {
-        public static List<IShapeData> LoadFilesInFolder(DirectoryInfo folder)
+        public static List<FeatureData> LoadFilesInFolder(DirectoryInfo folder)
         {
-            List<IShapeData> result = new();
+            List<FeatureData> result = new();
 
             var shapeFiles = folder.GetFiles().Where(file => file.Extension == ".shp");
 

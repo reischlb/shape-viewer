@@ -1,15 +1,13 @@
-﻿using NetTopologySuite.Geometries;
-using System;
-using System.Collections.Generic;
+﻿using DotSpatial.Data;
+using NetTopologySuite.Geometries;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ShapeLoader.Loaders
 {
     public class FeatureData
     {
+        private IFeatureSet Owner { get; init; }
+
         public Geometry Geometry { get; init; }
 
         public DataRow Data { get; init; }
@@ -18,10 +16,21 @@ namespace ShapeLoader.Loaders
 
         public OgcGeometryType GeometryType => Geometry.OgcGeometryType;
 
-        public FeatureData(Geometry geometry, DataRow data)
+        public void SaveAs(string fileName, bool overwrite = true)
+        {
+            Owner.SaveAs(fileName, overwrite);
+        }
+
+        public void Save()
+        {
+            Owner.Save();
+        }
+
+        public FeatureData(Geometry geometry, DataRow data, IFeatureSet owner)
         {
             Geometry = geometry;
             Data = data;
+            Owner = owner;
         }
     }
 }
