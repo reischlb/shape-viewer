@@ -1,6 +1,5 @@
 ﻿using DotSpatial.Data;
 using NetTopologySuite.Geometries;
-using ShapeData.Data;
 using System.Data;
 
 namespace ShapeLoader.Loaders
@@ -40,7 +39,8 @@ namespace ShapeLoader.Loaders
             {
                 FeatureData data = new(
                     geometry: featureSet.Features[i].Geometry,
-                    data: featureSet.DataTable.Rows[i]);
+                    data: featureSet.DataTable.Rows[i],
+                    owner: featureSet);
                 result.Add(data);
             }
             return result;

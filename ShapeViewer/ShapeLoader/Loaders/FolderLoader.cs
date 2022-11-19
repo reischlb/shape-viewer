@@ -1,5 +1,4 @@
-﻿using ShapeData.Data;
-using System.Data;
+﻿using System.Data;
 
 namespace ShapeLoader.Loaders
 {
