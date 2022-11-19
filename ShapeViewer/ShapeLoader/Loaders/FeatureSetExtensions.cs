@@ -31,5 +31,25 @@ namespace ShapeLoader.Loaders
 
             return geometries.Zip(attributes).ToList();
         }
+
+        public static List<FeatureData> GetObjects(this IFeatureSet featureSet)
+        {
+            List<FeatureData> result = new();
+
+            for (int i = 0; i < featureSet.Features.Count; i++)
+            {
+                FeatureData data = new(
+                    geometry: featureSet.Features[i].Geometry,
+                    data: featureSet.DataTable.Rows[i]);
+                result.Add(data);
+            }
+
+            var bol = result.Where(fd => (string)fd.Data[0] == "BOL").Select(x => x).First();
+
+            bol.Data[1] = "hello";
+
+            featureSet.SaveAs(@"C:\Users\reisc\OneDrive\Asztali gép\myshape3.shp", true);
+            return result;
+        }
     }
 }

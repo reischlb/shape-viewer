@@ -9,7 +9,6 @@ namespace ShapeData.Geometry
         public Polygon(IReadOnlyList<Point> points)
         {
             Points = points;
-            Debug.Assert(Points[0] == Points[Points.Count - 1]);
         }
     }
 }
