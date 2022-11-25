@@ -1,9 +1,9 @@
 ﻿using MapControl;
-using System;
+using NetTopologySuite.Geometries;
+using ShapeLoader.Loaders;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
+using Location = MapControl.Location;
 
 namespace Viewer
 {
@@ -96,6 +96,20 @@ namespace Viewer
             {
                 Locations = LocationCollection.Parse("53.5978,8.1212 53.6018,8.1494 53.5859,8.1554 53.5852,8.1531 53.5841,8.1539 53.5802,8.1392 53.5826,8.1309 53.5867,8.1317 53.5978,8.1212")
             });
+
+            LoadSHP();
+        }
+
+        public void LoadSHP()
+        {
+            var fileData = FolderLoader.LoadFilesInFolder(new DirectoryInfo(@"../../../../../examples"));
+
+            foreach (var data in fileData)
+            {
+                if (data is null) continue;
+                if (data.GeometryType is OgcGeometryType.Point)
+                    Points.Add(new PointItem() { Location = new Location(data.Geometry.Coordinates[0].X, data.Geometry.Coordinates[0].Y) });
+            }
         }
     }
 }

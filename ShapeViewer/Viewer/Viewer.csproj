@@ -14,6 +14,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ShapeLoader\ShapeLoader.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="MapControl.WPF">
       <HintPath>bin\Release\net6.0-windows\MapControl.WPF.dll</HintPath>
     </Reference>
