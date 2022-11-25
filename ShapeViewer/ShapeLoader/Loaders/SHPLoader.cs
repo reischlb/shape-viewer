@@ -6,6 +6,5 @@ namespace ShapeLoader.Loaders
     {
         public static List<FeatureData> LoadSHP(FileInfo shpFile) =>
             FeatureSet.Open(shpFile.FullName).GetObjects();
-
     }
 }

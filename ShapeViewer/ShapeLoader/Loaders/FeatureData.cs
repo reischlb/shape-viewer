@@ -16,6 +16,12 @@ namespace ShapeLoader.Loaders
 
         public OgcGeometryType GeometryType => Geometry.OgcGeometryType;
 
+       //public Dictionary<string, object[]> ZippedData() {
+       //    var row = Data.ItemArray.ToList();
+       //    var headers = Header.
+       //    
+       //}
+
         public void SaveAs(string fileName, bool overwrite = true)
         {
             Owner.SaveAs(fileName, overwrite);

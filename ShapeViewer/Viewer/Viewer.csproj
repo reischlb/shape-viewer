@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="XAML.MapControl" Version="7.3.0" />
+    <PackageReference Include="XAML.MapControl.MapProjections" Version="7.3.0" />
+    <PackageReference Include="XAML.MapControl.SQLiteCache" Version="7.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="MapControl.WPF">
+      <HintPath>bin\Release\net6.0-windows\MapControl.WPF.dll</HintPath>
+    </Reference>
+    <Reference Include="MapUiTools.WPF">
+      <HintPath>bin\Release\net6.0-windows\MapUiTools.WPF.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>
