@@ -60,6 +60,20 @@ namespace Viewer
             }
 
             
+
+           /* LoadSHP();*/
         }
+
+       /* public void LoadSHP()
+        {
+            var fileData = FolderLoader.LoadFilesInFolder(new DirectoryInfo(@"../../../../../examples"));
+
+            foreach (var data in fileData)
+            {
+                if (data is null) continue;
+                if (data.GeometryType is OgcGeometryType.Point)
+                    Points.Add(new PointItem() { Location = new Location(data.Geometry.Coordinates[0].X, data.Geometry.Coordinates[0].Y) });
+            }
+        }*/
     }
 }

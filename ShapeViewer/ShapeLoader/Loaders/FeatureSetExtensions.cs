@@ -17,20 +17,6 @@ namespace ShapeLoader.Loaders
                     select row.ItemArray).ToList();
         }
 
-        public static List<string> GetAttributeHeaders(this IFeatureSet featureSet)
-        {
-            return (from DataColumn column in featureSet.DataTable.Columns
-                    select column.ColumnName).ToList();
-        }
-
-        public static List<(Geometry Geometry, object[] Attributes)> GetZippedAttributes(this IFeatureSet featureSet)
-        {
-            var geometries = featureSet.GetGeometries();
-            var attributes = featureSet.GetAttributes();
-
-            return geometries.Zip(attributes).ToList();
-        }
-
         public static List<FeatureData> GetObjects(this IFeatureSet featureSet)
         {
             List<FeatureData> result = new();
@@ -40,7 +26,8 @@ namespace ShapeLoader.Loaders
                 FeatureData data = new(
                     geometry: featureSet.Features[i].Geometry,
                     data: featureSet.DataTable.Rows[i],
-                    owner: featureSet);
+                    owner: featureSet,
+                    index: i);
                 result.Add(data);
             }
             return result;

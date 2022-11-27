@@ -19,8 +19,4 @@
     <PackageReference Include="DotSpatial.Data" Version="4.0.656" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="ShapeUnit\" />
-  </ItemGroup>
-
 </Project>
