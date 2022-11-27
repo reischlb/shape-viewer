@@ -36,14 +36,20 @@ namespace ShapeLoader.Loaders
             asList.RemoveAt(index);
 
             UpdateGeometryWithCoordinates(asList);
-
         }
-
 
         public void InsertCoordinate(Coordinate coordinate, int index)
         {
             var asList = Geometry.Coordinates.ToList();
             asList.Insert(index, coordinate);
+
+            UpdateGeometryWithCoordinates(asList);
+        }
+
+        public void ChangeCoordinate(Coordinate coordinate, int index)
+        {
+            var asList = Geometry.Coordinates.ToList();
+            asList[index] = coordinate;
 
             UpdateGeometryWithCoordinates(asList);
         }
