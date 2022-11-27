@@ -26,7 +26,8 @@ namespace ShapeLoader.Loaders
                 FeatureData data = new(
                     geometry: featureSet.Features[i].Geometry,
                     data: featureSet.DataTable.Rows[i],
-                    owner: featureSet);
+                    owner: featureSet,
+                    index: i);
                 result.Add(data);
             }
             return result;
