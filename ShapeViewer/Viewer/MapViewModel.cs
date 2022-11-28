@@ -1,8 +1,10 @@
-﻿using GeoAPI.IO;
+﻿using GeoAPI.Geometries;
+using GeoAPI.IO;
 using MapControl;
 using ShapeLoader.Loaders;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -14,19 +16,20 @@ namespace Viewer
     {
         public string Name { get; set; }
 
-        public Location Location { get; set; }
+        public MapControl.Location Location { get; set; }
     }
 
     public class PolylineItem
     {
         public LocationCollection Locations { get; set; }
+        public FeatureData featureData { get; set; }
     }
 
     public class MapViewModel
     {
         public List<PointItem> Points { get; } = new List<PointItem>();
         public List<PointItem> Pushpins { get; } = new List<PointItem>();
-        public List<PolylineItem> Polylines { get; } = new List<PolylineItem>();
+        public static ObservableCollection<PolylineItem> Polylines { get; } = new ObservableCollection<PolylineItem>();
 
         public MapViewModel()
         {
@@ -34,17 +37,20 @@ namespace Viewer
             List<FeatureData> data = ShapeLoader.Loaders.FolderLoader.LoadFilesInFolder(info);
             int i = 0;
             foreach (var item in data){ 
-                if (item.GeometryType.ToString() == "Polygon" || item.GeometryType.ToString() == "MultiPolygon")
+                if (item.GeometryType.CompareTo(NetTopologySuite.Geometries.OgcGeometryType.Polygon)==0 || item.GeometryType.CompareTo(NetTopologySuite.Geometries.OgcGeometryType.MultiPolygon)==0)
                 {
                     i += 1;
-                    if (i > 1000)
+                    if (i > 10)
                         return;
                     PolylineItem polylineItem = new PolylineItem();
                     polylineItem.Locations = LocationCollection.Parse("");
+                    polylineItem.featureData = item;
 
-                                 
-                    
-                    foreach(var item2 in item.Geometry.Coordinates)
+
+
+
+
+                    foreach (var item2 in item.Geometry.Coordinates)
                     {
                         polylineItem.Locations.Add(item2.CoordinateValue.X*-1, item2.CoordinateValue.Y*-1);
                     }
