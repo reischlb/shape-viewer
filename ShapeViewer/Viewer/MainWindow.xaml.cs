@@ -161,12 +161,12 @@ namespace Viewer
         {
             if (selectedPolyLineIndex == -1)
                 return;
-            PolylineItem polylineItem = new PolylineItem();
-            String a = polygonText.Text.Replace("\r\n", " ");
-            polylineItem.Locations = LocationCollection.Parse(a);
-            MapViewModel.Polylines[selectedPolyLineIndex]= polylineItem;
-            int b = 2;
-  
+            string coordinates = polygonText.Text.Replace("\r\n", " ");
+            var locations = LocationCollection.Parse(coordinates);
+            if (locations is null) return;
+            MapViewModel.Polylines[selectedPolyLineIndex].FeatureData.ReplaceAllCoordinates(locations.ToCoordinates());
+            MapViewModel.Polylines[selectedPolyLineIndex].Locations = locations;
+            MapViewModel.Polylines[selectedPolyLineIndex].FeatureData.SaveAsNew();
         }
     }
 }

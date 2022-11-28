@@ -54,6 +54,11 @@ namespace ShapeLoader.Loaders
             UpdateGeometryWithCoordinates(asList);
         }
 
+        public void ReplaceAllCoordinates(List<Coordinate> coordinates)
+        {
+            UpdateGeometryWithCoordinates(coordinates);
+        }
+
         private void UpdateGeometryWithCoordinates(List<Coordinate> asList)
         {
             var factory = Geometry.Factory;
@@ -82,6 +87,13 @@ namespace ShapeLoader.Loaders
         public void Save()
         {
             Owner.Save();
+        }
+
+        public void SaveAsNew()
+        {
+            var name = Owner.Filename;
+
+            Owner.SaveAs($"{Path.GetDirectoryName(name)}{Path.DirectorySeparatorChar}new_{Path.GetFileName(name)}", true);
         }
 
         public FeatureData(Geometry geometry, DataRow data, IFeatureSet owner, int index)
