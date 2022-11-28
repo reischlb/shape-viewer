@@ -20,7 +20,7 @@ namespace Viewer
     public partial class MainWindow : Window
     {
         private PolylineItem selectedPolyLineItem;
-        private int selectedPolyLineIndex=-1;
+        private int selectedPolyLineIndex = -1;
 
         static MainWindow()
         {
@@ -67,7 +67,7 @@ namespace Viewer
                 polygonText.Text = "";
 
                 map.TargetCenter = map.ViewToLocation(e.GetPosition(map));
-                MapControl.Location cursor= map.ViewToLocation(e.GetPosition(map));
+                MapControl.Location cursor = map.ViewToLocation(e.GetPosition(map));
                 ObservableCollection<PolylineItem> ab = MapViewModel.Polylines;
                 double minDistance = 10;
                 PolylineItem minPolyLine = new PolylineItem();
@@ -78,26 +78,26 @@ namespace Viewer
                     double xCoord = p.Locations.Average(x => x.Latitude);
                     double yCoord = p.Locations.Average(x => x.Longitude);
                     var distance = Math.Sqrt((Math.Pow(cursor.Latitude - xCoord, 2) + Math.Pow(cursor.Longitude - yCoord, 2)));
-                    if(distance < minDistance)
+                    if (distance < minDistance)
                     {
                         minDistance = distance;
                         minPolyLine = p;
-                        selectedPolyLineIndex= index;
+                        selectedPolyLineIndex = index;
                     }
 
                     index++;
                 }
 
-                if (selectedPolyLineIndex == -1 )
+                if (selectedPolyLineIndex == -1)
                     return;
 
                 foreach (var item in minPolyLine.Locations)
-                    polygonText.Text += item.ToString()+ "\r\n";
+                    polygonText.Text += item.ToString() + "\r\n";
 
                 geometryIdValue.Content = selectedPolyLineIndex.ToString();
-                geometryAreaValue.Content = minPolyLine.featureData.Geometry.Area.ToString();
-                geometryPointsValue.Content = minPolyLine.featureData.Geometry.Coordinates.Length.ToString();
-                geometryTypeValue.Content = minPolyLine.featureData.GeometryType.ToString();
+                geometryAreaValue.Content = minPolyLine.FeatureData.Geometry.Area.ToString();
+                geometryPointsValue.Content = minPolyLine.FeatureData.Geometry.Coordinates.Length.ToString();
+                geometryTypeValue.Content = minPolyLine.FeatureData.GeometryType.ToString();
                 selectedPolyLineItem = minPolyLine;
 
                 int a = 1;

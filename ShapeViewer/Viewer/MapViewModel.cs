@@ -22,7 +22,7 @@ namespace Viewer
     public class PolylineItem
     {
         public LocationCollection Locations { get; set; }
-        public FeatureData featureData { get; set; }
+        public FeatureData FeatureData { get; set; }
     }
 
     public class MapViewModel
@@ -33,53 +33,29 @@ namespace Viewer
 
         public MapViewModel()
         {
-            DirectoryInfo info = new DirectoryInfo("examples");
-            List<FeatureData> data = ShapeLoader.Loaders.FolderLoader.LoadFilesInFolder(info);
+          //  DirectoryInfo info = new DirectoryInfo("examples");
+            DirectoryInfo info = new(@"../../../../../examples");
+            List<FeatureData> data = FolderLoader.LoadFilesInFolder(info);
             int i = 0;
-            foreach (var item in data){ 
-                if (item.GeometryType.CompareTo(NetTopologySuite.Geometries.OgcGeometryType.Polygon)==0 || item.GeometryType.CompareTo(NetTopologySuite.Geometries.OgcGeometryType.MultiPolygon)==0)
+            foreach (var item in data)
+            {
+                if (item.GeometryType == NetTopologySuite.Geometries.OgcGeometryType.Polygon || item.GeometryType == NetTopologySuite.Geometries.OgcGeometryType.MultiPolygon)
                 {
                     i += 1;
                     if (i > 10)
                         return;
                     PolylineItem polylineItem = new PolylineItem();
                     polylineItem.Locations = LocationCollection.Parse("");
-                    polylineItem.featureData = item;
-
-
-
-
+                    polylineItem.FeatureData = item;
 
                     foreach (var item2 in item.Geometry.Coordinates)
                     {
-                        polylineItem.Locations.Add(item2.CoordinateValue.X*-1, item2.CoordinateValue.Y*-1);
+                        polylineItem.Locations.Add(item2.CoordinateValue.X * -1, item2.CoordinateValue.Y * -1);
                     }
 
                     Polylines.Add(polylineItem);
                 }
-                else
-                {
-                    int a = 1;
-                }
-
-
             }
-
-            
-
-           /* LoadSHP();*/
         }
-
-       /* public void LoadSHP()
-        {
-            var fileData = FolderLoader.LoadFilesInFolder(new DirectoryInfo(@"../../../../../examples"));
-
-            foreach (var data in fileData)
-            {
-                if (data is null) continue;
-                if (data.GeometryType is OgcGeometryType.Point)
-                    Points.Add(new PointItem() { Location = new Location(data.Geometry.Coordinates[0].X, data.Geometry.Coordinates[0].Y) });
-            }
-        }*/
     }
 }
