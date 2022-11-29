@@ -66,7 +66,7 @@ namespace Viewer
     public class PolylineItem : INotifyPropertyChanged
     {
         public LocationCollection Locations { get; set; }
-        public FeatureData featureData { get; set; }
+        public FeatureData FeatureData { get; set; }
 
         private SolidColorBrush _color;
         public   SolidColorBrush color
@@ -105,8 +105,9 @@ namespace Viewer
 
         public MapViewModel()
         {
-            DirectoryInfo info = new DirectoryInfo("examples");
-            List<FeatureData> data = ShapeLoader.Loaders.FolderLoader.LoadFilesInFolder(info);
+          //  DirectoryInfo info = new DirectoryInfo("examples");
+            DirectoryInfo info = new(@"../../../../../examples");
+            List<FeatureData> data = FolderLoader.LoadFilesInFolder(info);
             int i = 0;
             int limit = 30;
             PointItem pointItem = new PointItem();
@@ -121,12 +122,8 @@ namespace Viewer
                         return;
                     PolylineItem polylineItem = new PolylineItem();
                     polylineItem.Locations = LocationCollection.Parse("");
-                    polylineItem.featureData = item;
+                    polylineItem.FeatureData = item;
                     polylineItem.color=new SolidColorBrush(System.Windows.Media.Color.FromArgb(255,255,0,0));
-
-
-
-
 
                     foreach (var item2 in item.Geometry.Coordinates)
                     {
@@ -155,26 +152,6 @@ namespace Viewer
 
 
             }
-
-
-
-
-            /* LoadSHP();*/
         }
-
-       
-        
-
-        /* public void LoadSHP()
-         {
-             var fileData = FolderLoader.LoadFilesInFolder(new DirectoryInfo(@"../../../../../examples"));
-
-             foreach (var data in fileData)
-             {
-                 if (data is null) continue;
-                 if (data.GeometryType is OgcGeometryType.Point)
-                     Points.Add(new PointItem() { Location = new Location(data.Geometry.Coordinates[0].X, data.Geometry.Coordinates[0].Y) });
-             }
-         }*/
     }
 }

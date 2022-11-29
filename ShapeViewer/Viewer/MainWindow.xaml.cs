@@ -21,7 +21,7 @@ namespace Viewer
     public partial class MainWindow : Window
     {
         private PolylineItem selectedPolyLineItem;
-        private int selectedPolyLineIndex=-1;
+        private int selectedPolyLineIndex = -1;
         private PointItem selectedPointItem;
         private int selectedPointIndex = -1;
 
@@ -81,7 +81,7 @@ namespace Viewer
                 }
 
                 map.TargetCenter = map.ViewToLocation(e.GetPosition(map));
-                MapControl.Location cursor= map.ViewToLocation(e.GetPosition(map));
+                MapControl.Location cursor = map.ViewToLocation(e.GetPosition(map));
                 double minDistanceForPoly = 10;
                 double minDistanceForPoint = 10;
                 PolylineItem minPolyLine = new PolylineItem();
@@ -129,9 +129,9 @@ namespace Viewer
                         polygonText.Text += item.ToString() + "\r\n";
 
                     geometryIdValue.Content = selectedPolyLineIndex.ToString();
-                    geometryAreaValue.Content = minPolyLine.featureData.Geometry.Area.ToString();
-                    geometryPointsValue.Content = minPolyLine.featureData.Geometry.Coordinates.Length.ToString();
-                    geometryTypeValue.Content = minPolyLine.featureData.GeometryType.ToString();
+                    geometryAreaValue.Content = minPolyLine.FeatureData.Geometry.Area.ToString();
+                    geometryPointsValue.Content = minPolyLine.FeatureData.Geometry.Coordinates.Length.ToString();
+                    geometryTypeValue.Content = minPolyLine.FeatureData.GeometryType.ToString();
                     selectedPolyLineItem = minPolyLine;
                     minPolyLine.color = selectColor;
 
