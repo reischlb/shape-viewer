@@ -13,6 +13,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Shapes;
 
 namespace Viewer
@@ -21,6 +22,8 @@ namespace Viewer
     {
         private PolylineItem selectedPolyLineItem;
         private int selectedPolyLineIndex=-1;
+        private PointItem selectedPointItem;
+        private int selectedPointIndex = -1;
 
         static MainWindow()
         {
@@ -39,6 +42,7 @@ namespace Viewer
 
         public MainWindow()
         {
+
             InitializeComponent();
 
             AddChartServerLayer();
@@ -65,40 +69,90 @@ namespace Viewer
             if (e.ClickCount == 2)
             {
                 polygonText.Text = "";
+                SolidColorBrush defaultColor = new SolidColorBrush(Color.FromArgb(255, 255, 0, 0));
+                SolidColorBrush selectColor= new SolidColorBrush(Color.FromArgb(255, 0, 255, 0));
+                foreach (var item in MapViewModel.Polylines)
+                {
+                    item.color= defaultColor;
+                }
+                foreach (var item in MapViewModel.Points)
+                {
+                    item.color = defaultColor;
+                }
 
                 map.TargetCenter = map.ViewToLocation(e.GetPosition(map));
                 MapControl.Location cursor= map.ViewToLocation(e.GetPosition(map));
-                ObservableCollection<PolylineItem> ab = MapViewModel.Polylines;
-                double minDistance = 10;
+                double minDistanceForPoly = 10;
+                double minDistanceForPoint = 10;
                 PolylineItem minPolyLine = new PolylineItem();
-                int id = -1;
-                int index = 0;
-                foreach (PolylineItem p in ab)
+                int idForPoly = -1;
+                int indexForPoly = 0;
+                int indexForPoint = 0;
+
+                PointItem minPoint = new PointItem();
+                foreach (PolylineItem polyItem in MapViewModel.Polylines)
                 {
-                    double xCoord = p.Locations.Average(x => x.Latitude);
-                    double yCoord = p.Locations.Average(x => x.Longitude);
+                    double xCoord = polyItem.Locations.Average(x => x.Latitude);
+                    double yCoord = polyItem.Locations.Average(x => x.Longitude);
                     var distance = Math.Sqrt((Math.Pow(cursor.Latitude - xCoord, 2) + Math.Pow(cursor.Longitude - yCoord, 2)));
-                    if(distance < minDistance)
+                    if(distance < minDistanceForPoly)
                     {
-                        minDistance = distance;
-                        minPolyLine = p;
-                        selectedPolyLineIndex= index;
+                        minDistanceForPoly = distance;
+                        minPolyLine = polyItem;
+                        selectedPolyLineIndex= indexForPoly;
                     }
 
-                    index++;
+                    indexForPoly++;
                 }
 
-                if (selectedPolyLineIndex == -1 )
+                foreach (PointItem pointItem in MapViewModel.Points)
+                {
+                    double xCoord = pointItem.Location.Latitude;
+                    double yCoord = pointItem.Location.Longitude;
+                    var distance = Math.Sqrt((Math.Pow(cursor.Latitude - xCoord, 2) + Math.Pow(cursor.Longitude - yCoord, 2)));
+                    if (distance < minDistanceForPoint)
+                    {
+                        minDistanceForPoint = distance;
+                        minPoint = pointItem;
+                        selectedPointIndex = indexForPoint;
+                    }
+
+                    indexForPoint++;
+                }
+
+                if (selectedPolyLineIndex == -1 && selectedPointIndex == -1)
                     return;
+                if(minDistanceForPoly<minDistanceForPoint)
+                {
+                    selectedPointIndex = -1;
+                    foreach (var item in minPolyLine.Locations)
+                        polygonText.Text += item.ToString() + "\r\n";
 
-                foreach (var item in minPolyLine.Locations)
-                    polygonText.Text += item.ToString()+ "\r\n";
+                    geometryIdValue.Content = selectedPolyLineIndex.ToString();
+                    geometryAreaValue.Content = minPolyLine.featureData.Geometry.Area.ToString();
+                    geometryPointsValue.Content = minPolyLine.featureData.Geometry.Coordinates.Length.ToString();
+                    geometryTypeValue.Content = minPolyLine.featureData.GeometryType.ToString();
+                    selectedPolyLineItem = minPolyLine;
+                    minPolyLine.color = selectColor;
 
-                geometryIdValue.Content = selectedPolyLineIndex.ToString();
-                geometryAreaValue.Content = minPolyLine.featureData.Geometry.Area.ToString();
-                geometryPointsValue.Content = minPolyLine.featureData.Geometry.Coordinates.Length.ToString();
-                geometryTypeValue.Content = minPolyLine.featureData.GeometryType.ToString();
-                selectedPolyLineItem = minPolyLine;
+                    MapViewModel.Polylines[selectedPolyLineIndex] = minPolyLine;
+                }
+                else
+                {
+                    selectedPolyLineIndex = -1;
+                    polygonText.Text = minPoint.Location.Latitude.ToString() + " " + minPoint.Location.Longitude.ToString();
+                    geometryIdValue.Content = selectedPointIndex.ToString();
+                    geometryAreaValue.Content = 0;
+                    geometryPointsValue.Content = "1";
+                    geometryTypeValue.Content = "Point";
+                    selectedPointItem = minPoint;
+                    minPoint.color = selectColor;
+
+                    MapViewModel.Points[selectedPointIndex] = minPoint;
+                }
+                
+
+
 
                 int a = 1;
 
@@ -159,12 +213,25 @@ namespace Viewer
 
         private void Save(object sender, RoutedEventArgs e)
         {
-            if (selectedPolyLineIndex == -1)
-                return;
-            PolylineItem polylineItem = new PolylineItem();
-            String a = polygonText.Text.Replace("\r\n", " ");
-            polylineItem.Locations = LocationCollection.Parse(a);
-            MapViewModel.Polylines[selectedPolyLineIndex]= polylineItem;
+            if( selectedPolyLineIndex>-1)
+            {
+                PolylineItem polylineItem = new PolylineItem();
+                polylineItem.color = new SolidColorBrush(Color.FromArgb(255, 0, 255, 0));
+                String a = polygonText.Text.Replace("\r\n", " ");
+                polylineItem.Locations = LocationCollection.Parse(a);
+                MapViewModel.Polylines[selectedPolyLineIndex] = polylineItem;
+            }
+            else if(selectedPointIndex>-1)
+            {
+                PointItem pointItem = new PointItem();
+                pointItem.color = new SolidColorBrush(Color.FromArgb(255, 0, 255, 0));
+                String[] a = polygonText.Text.Split(" ");
+                pointItem.Location=new MapControl.Location(Double.Parse(a[0]), Double.Parse(a[1]));
+                MapViewModel.Points[selectedPointIndex] = pointItem;
+
+            }
+                
+            
             int b = 2;
   
         }
